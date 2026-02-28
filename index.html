@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FarmWatch — Multipurpose Farming Monitor</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-theme="dark">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">FW</div>
+        <div>
+          <div class="title">FarmWatch</div>
+          <div class="subtitle">Planting • Watering • Weeding • Harvest • Sorting • Packaging</div>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <div class="pill" title="Data source status">
+          <span class="dot" id="liveDot" aria-hidden="true"></span>
+          <span id="liveText">Idle</span>
+        </div>
+
+        <button class="btn" id="connectBtn" type="button">
+          <span class="btn-icon" aria-hidden="true">⎓</span>
+          <span id="connectLabel">Connect</span>
+        </button>
+
+        <button class="btn" id="modeBtn" type="button" aria-label="Toggle mode">
+          <span class="btn-icon" aria-hidden="true">◐</span>
+          <span id="modeLabel">Dark Ops</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="grid">
+        <article class="card kpi">
+          <div class="card-head">
+            <h3>Soil Moisture</h3>
+            <span class="tag" id="soilStatus">—</span>
+          </div>
+          <div class="kpi-value"><span id="soilMoisture">—</span><span class="unit">%</span></div>
+          <div class="kpi-sub">Planting module (A0)</div>
+          <div class="meter"><div class="meter-fill" id="soilMeter"></div></div>
+        </article>
+
+        <article class="card kpi">
+          <div class="card-head">
+            <h3>Temperature Level</h3>
+            <span class="tag" id="tempStatus">—</span>
+          </div>
+          <div class="kpi-value"><span id="tempPct">—</span><span class="unit">%</span></div>
+          <div class="kpi-sub">Watering module (A2)</div>
+          <div class="meter"><div class="meter-fill" id="tempMeter"></div></div>
+        </article>
+
+        <article class="card kpi">
+          <div class="card-head">
+            <h3>Harvest Readiness</h3>
+            <span class="tag" id="harvestStatus">—</span>
+          </div>
+          <div class="kpi-value"><span id="harvestPct">—</span><span class="unit">%</span></div>
+          <div class="kpi-sub">Harvest module (A1)</div>
+          <div class="meter"><div class="meter-fill" id="harvestMeter"></div></div>
+        </article>
+
+        <article class="card kpi">
+          <div class="card-head">
+            <h3>Sorting Quality</h3>
+            <span class="tag" id="sortStatus">—</span>
+          </div>
+          <div class="kpi-value"><span id="sortPct">—</span><span class="unit">%</span></div>
+          <div class="kpi-sub">Sorting module (A3)</div>
+          <div class="meter"><div class="meter-fill" id="sortMeter"></div></div>
+        </article>
+      </section>
+
+      <section class="split">
+        <article class="card">
+          <div class="card-head">
+            <h3>Events & Alerts</h3>
+            <div class="hint">From Arduino “event” messages</div>
+          </div>
+          <ul class="alerts" id="alertsList" aria-live="polite"></ul>
+        </article>
+
+        <article class="card">
+          <div class="card-head">
+            <h3>Live Telemetry</h3>
+            <div class="hint">Latest readings</div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Module</th>
+                  <th>Raw</th>
+                  <th>Percent</th>
+                  <th>Status</th>
+                  <th>Updated</th>
+                </tr>
+              </thead>
+              <tbody id="telemetryTbody"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <h3>Module States</h3>
+          <div class="hint">What the system is doing right now</div>
+        </div>
+
+        <div class="overview">
+          <div class="overview-item">
+            <div class="label">Planting</div>
+            <div class="value" id="actPlanting">—</div>
+          </div>
+          <div class="overview-item">
+            <div class="label">Watering</div>
+            <div class="value" id="actWatering">—</div>
+          </div>
+          <div class="overview-item">
+            <div class="label">Weeding</div>
+            <div class="value" id="actWeeding">—</div>
+          </div>
+          <div class="overview-item">
+            <div class="label">Packaging</div>
+            <div class="value" id="actPackaging">—</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>FarmWatch • Tinkercad/Arduino Uno • Web Serial</span>
+      <span class="muted">Modes: Black+Green (Ops) / White+Green (Reports)</span>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
