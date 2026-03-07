@@ -1,146 +1,526 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>FarmWatch — Multipurpose Farming Monitor</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body data-theme="dark">
-    <header class="topbar">
-      <div class="brand">
-        <div class="logo">FW</div>
-        <div>
-          <div class="title">FarmWatch</div>
-          <div class="subtitle">Planting • Watering • Weeding • Harvest • Sorting • Packaging</div>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>FarmWatch — Smart Farming Platform</title>
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2eea7a">
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body data-theme="dark">
+    <div class="offline-banner" id="offlineBanner">
+  📡 You are offline — FarmWatch is running from saved data
+</div>
+
+<!-- ═══════════════════════════════════════════
+     AUTH SCREEN
+════════════════════════════════════════════ -->
+<div id="authScreen" class="screen auth-screen active">
+  <div class="auth-bg">
+    <div class="auth-orb orb1"></div>
+    <div class="auth-orb orb2"></div>
+    <div class="auth-orb orb3"></div>
+  </div>
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="logo-mark">🌾</div>
+      <div class="auth-brand">FarmWatch</div>
+      <div class="auth-tagline">Smart Farming Intelligence Platform</div>
+    </div>
+
+    <!-- Login Form -->
+    <div id="loginForm" class="auth-form active">
+      <h2 class="form-title">Welcome back, farmer</h2>
+      <div class="field-group">
+        <label>Email</label>
+        <input type="email" id="loginEmail" placeholder="you@farm.com" class="field"/>
+      </div>
+      <div class="field-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" class="field"/>
+      </div>
+      <button class="btn-primary" onclick="handleLogin()">Sign In →</button>
+      <p class="auth-switch">New to FarmWatch? <a href="#" onclick="switchAuth('register')">Create account</a></p>
+      <p class="auth-switch demo-hint"><a href="#" onclick="quickDemo()">→ Skip login — try demo</a></p>
+    </div>
+
+    <!-- Register Form -->
+    <div id="registerForm" class="auth-form">
+      <h2 class="form-title">Start growing smarter</h2>
+      <div class="fields-row">
+        <div class="field-group">
+          <label>First Name</label>
+          <input type="text" id="regFirst" placeholder="Faith" class="field"/>
+        </div>
+        <div class="field-group">
+          <label>Last Name</label>
+          <input type="text" id="regLast" placeholder="Nakato" class="field"/>
         </div>
       </div>
+      <div class="field-group">
+        <label>Email</label>
+        <input type="email" id="regEmail" placeholder="you@farm.com" class="field"/>
+      </div>
+      <div class="field-group">
+        <label>Farm Name</label>
+        <input type="text" id="regFarm" placeholder="e.g. Green Valley Farm" class="field"/>
+      </div>
+      <div class="field-group">
+        <label>Location</label>
+        <input type="text" id="regLocation" placeholder="e.g. Kampala, Uganda" class="field"/>
+      </div>
+      <div class="field-group">
+        <label>Password</label>
+        <input type="password" id="regPassword" placeholder="••••••••" class="field"/>
+      </div>
+      <button class="btn-primary" onclick="handleRegister()">Create Account →</button>
+      <p class="auth-switch">Already have an account? <a href="#" onclick="switchAuth('login')">Sign in</a></p>
+    </div>
+  </div>
+</div>
 
-      <div class="topbar-actions">
-        <div class="pill" title="Data source status">
-          <span class="dot" id="liveDot" aria-hidden="true"></span>
+<!-- ═══════════════════════════════════════════
+     MAIN APP
+════════════════════════════════════════════ -->
+<div id="appScreen" class="screen">
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-mark-sm">🌾</span>
+      <span class="sidebar-brand">FarmWatch</span>
+    </div>
+
+    <div class="farm-selector" id="farmSelector">
+      <div class="farm-icon">🌿</div>
+      <div class="farm-info">
+        <div class="farm-name" id="sidebarFarmName">My Farm</div>
+        <div class="farm-loc" id="sidebarFarmLoc">—</div>
+      </div>
+    </div>
+
+    <ul class="nav-links">
+      <li><a href="#" class="nav-link active" data-page="dashboard" onclick="gotoPage('dashboard',this)"><span class="nav-icon">📊</span> Dashboard</a></li>
+      <li><a href="#" class="nav-link" data-page="fields" onclick="gotoPage('fields',this)"><span class="nav-icon">🗺️</span> My Fields</a></li>
+      <li><a href="#" class="nav-link" data-page="history" onclick="gotoPage('history',this)"><span class="nav-icon">📈</span> History</a></li>
+      <li><a href="#" class="nav-link" data-page="calendar" onclick="gotoPage('calendar',this)"><span class="nav-icon">📅</span> Crop Calendar</a></li>
+      <li><a href="#" class="nav-link" data-page="notes" onclick="gotoPage('notes',this)"><span class="nav-icon">📝</span> Farm Notes</a></li>
+      <li><a href="#" class="nav-link" data-page="alerts" onclick="gotoPage('alerts',this)"><span class="nav-icon">🔔</span> Alerts <span class="badge-count" id="alertBadge">0</span></a></li>
+      <li><a href="#" class="nav-link" data-page="profit" onclick="gotoPage('profit',this)"><span class="nav-icon">💰</span> Profit Tracker</a></li>
+      <li><a href="#" class="nav-link" data-page="chat" onclick="gotoPage('chat',this)"><span class="nav-icon">🤖</span> AI Assistant</a></li>
+      <li><a href="#" class="nav-link" data-page="settings" onclick="gotoPage('settings',this)"><span class="nav-icon">⚙️</span> Settings</a></li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <div class="user-chip" id="userChip">
+        <div class="user-avatar" id="userAvatar">F</div>
+        <div class="user-meta">
+          <div class="user-name" id="userName">Farmer</div>
+          <div class="user-role">Farm Owner</div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="logout()">Sign out</button>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <div class="app-body">
+
+    <!-- Top bar -->
+    <header class="app-topbar">
+      <div class="topbar-left">
+        <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+        <div class="page-title" id="pageTitle">Dashboard</div>
+      </div>
+      <div class="topbar-right">
+        <div class="live-pill" id="livePill">
+          <span class="dot" id="liveDot"></span>
           <span id="liveText">Idle</span>
         </div>
-
-        <button class="btn" id="connectBtn" type="button">
-          <span class="btn-icon" aria-hidden="true">⎓</span>
-          <span id="connectLabel">Connect</span>
-        </button>
-
-        <button class="btn" id="modeBtn" type="button" aria-label="Toggle mode">
-          <span class="btn-icon" aria-hidden="true">◐</span>
-          <span id="modeLabel">Dark Ops</span>
-        </button>
+        <button class="btn-demo" id="demoBtn" onclick="toggleDemo()">▶ Demo Mode</button>
+        <button class="btn-connect" id="connectBtn" onclick="connectSerial()">⎓ Connect</button>
+        <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" title="Toggle theme">◐</button>
       </div>
     </header>
 
-    <main class="layout">
-      <section class="grid">
-        <article class="card kpi">
-          <div class="card-head">
-            <h3>Soil Moisture</h3>
-            <span class="tag" id="soilStatus">—</span>
-          </div>
-          <div class="kpi-value"><span id="soilMoisture">—</span><span class="unit">%</span></div>
-          <div class="kpi-sub">Planting module (A0)</div>
-          <div class="meter"><div class="meter-fill" id="soilMeter"></div></div>
-        </article>
+    <!-- ── PAGE: DASHBOARD ── -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-inner">
 
-        <article class="card kpi">
-          <div class="card-head">
-            <h3>Temperature Level</h3>
-            <span class="tag" id="tempStatus">—</span>
+        <!-- Weather banner -->
+        <div class="weather-banner" id="weatherBanner">
+          <div class="weather-main">
+            <div class="weather-icon" id="weatherIcon">⛅</div>
+            <div class="weather-info">
+              <div class="weather-temp" id="weatherTemp">24°C</div>
+              <div class="weather-desc" id="weatherDesc">Partly Cloudy — Good day for fieldwork</div>
+            </div>
           </div>
-          <div class="kpi-value"><span id="tempPct">—</span><span class="unit">%</span></div>
-          <div class="kpi-sub">Watering module (A2)</div>
-          <div class="meter"><div class="meter-fill" id="tempMeter"></div></div>
-        </article>
-
-        <article class="card kpi">
-          <div class="card-head">
-            <h3>Harvest Readiness</h3>
-            <span class="tag" id="harvestStatus">—</span>
+          <div class="weather-stats">
+            <div class="w-stat"><span>💧</span><span id="wHumid">68%</span><span class="wlabel">Humidity</span></div>
+            <div class="w-stat"><span>💨</span><span id="wWind">12 km/h</span><span class="wlabel">Wind</span></div>
+            <div class="w-stat"><span>🌧️</span><span id="wRain">30%</span><span class="wlabel">Rain chance</span></div>
+            <div class="w-stat"><span>☀️</span><span id="wUV">UV 5</span><span class="wlabel">UV Index</span></div>
           </div>
-          <div class="kpi-value"><span id="harvestPct">—</span><span class="unit">%</span></div>
-          <div class="kpi-sub">Harvest module (A1)</div>
-          <div class="meter"><div class="meter-fill" id="harvestMeter"></div></div>
-        </article>
+        </div>
+<div class="market-banner" id="marketBanner">
+  🌽 Maize: 1,200 UGX/kg &nbsp;|&nbsp; 🍅 Tomatoes: 800 UGX/kg &nbsp;|&nbsp; 🫘 Beans: 2,500 UGX/kg &nbsp;|&nbsp; 🥬 Cabbage: 500 UGX/kg &nbsp;|&nbsp; 🍠 Sweet Potatoes: 600 UGX/kg &nbsp;|&nbsp; 🥜 Groundnuts: 3,500 UGX/kg
+</div>
+        <!-- AI Insight banner -->
+        <div class="insight-banner" id="insightBanner">
+          <div class="insight-icon">🤖</div>
+          <div class="insight-text" id="insightText">Start Demo Mode or connect your Arduino to get AI-powered crop recommendations.</div>
+        </div>
 
-        <article class="card kpi">
-          <div class="card-head">
-            <h3>Sorting Quality</h3>
-            <span class="tag" id="sortStatus">—</span>
+        <!-- KPI cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card" id="kpi-soil">
+            <div class="kpi-header">
+              <div class="kpi-label">Soil Moisture</div>
+              <span class="kpi-badge" id="soilStatus">—</span>
+            </div>
+            <div class="kpi-val"><span id="soilMoisture">—</span><span class="kpi-unit">%</span></div>
+            <div class="kpi-sub">Planting module · A0</div>
+            <div class="meter"><div class="meter-fill" id="soilMeter" style="--color:#2eea7a"></div></div>
+            <div class="kpi-trend" id="soilTrend">—</div>
           </div>
-          <div class="kpi-value"><span id="sortPct">—</span><span class="unit">%</span></div>
-          <div class="kpi-sub">Sorting module (A3)</div>
-          <div class="meter"><div class="meter-fill" id="sortMeter"></div></div>
-        </article>
-      </section>
 
-      <section class="split">
-        <article class="card">
-          <div class="card-head">
-            <h3>Events & Alerts</h3>
-            <div class="hint">From Arduino “event” messages</div>
+          <div class="kpi-card" id="kpi-temp">
+            <div class="kpi-header">
+              <div class="kpi-label">Temperature Level</div>
+              <span class="kpi-badge" id="tempStatus">—</span>
+            </div>
+            <div class="kpi-val"><span id="tempPct">—</span><span class="kpi-unit">%</span></div>
+            <div class="kpi-sub">Watering module · A2</div>
+            <div class="meter"><div class="meter-fill" id="tempMeter" style="--color:#ff9f43"></div></div>
+            <div class="kpi-trend" id="tempTrend">—</div>
           </div>
-          <ul class="alerts" id="alertsList" aria-live="polite"></ul>
-        </article>
 
-        <article class="card">
+          <div class="kpi-card" id="kpi-harvest">
+            <div class="kpi-header">
+              <div class="kpi-label">Harvest Readiness</div>
+              <span class="kpi-badge" id="harvestStatus">—</span>
+            </div>
+            <div class="kpi-val"><span id="harvestPct">—</span><span class="kpi-unit">%</span></div>
+            <div class="kpi-sub">Harvest module · A1</div>
+            <div class="meter"><div class="meter-fill" id="harvestMeter" style="--color:#ffd32a"></div></div>
+            <div class="kpi-trend" id="harvestTrend">—</div>
+          </div>
+
+          <div class="kpi-card" id="kpi-sort">
+            <div class="kpi-header">
+              <div class="kpi-label">Sorting Quality</div>
+              <span class="kpi-badge" id="sortStatus">—</span>
+            </div>
+            <div class="kpi-val"><span id="sortPct">—</span><span class="kpi-unit">%</span></div>
+            <div class="kpi-sub">Sorting module · A3</div>
+            <div class="meter"><div class="meter-fill" id="sortMeter" style="--color:#00d2ff"></div></div>
+            <div class="kpi-trend" id="sortTrend">—</div>
+          </div>
+        </div>
+
+        <!-- Module states + telemetry -->
+        <div class="dash-split">
+          <div class="card">
+            <div class="card-head"><h3>Module States</h3><div class="hint">Live activity</div></div>
+            <div class="module-grid">
+              <div class="module-item" id="mod-planting">
+                <div class="mod-icon">🌱</div>
+                <div class="mod-label">Planting</div>
+                <div class="mod-status" id="actPlanting">—</div>
+              </div>
+              <div class="module-item" id="mod-watering">
+                <div class="mod-icon">💧</div>
+                <div class="mod-label">Watering</div>
+                <div class="mod-status" id="actWatering">—</div>
+              </div>
+              <div class="module-item" id="mod-weeding">
+                <div class="mod-icon">🌿</div>
+                <div class="mod-label">Weeding</div>
+                <div class="mod-status" id="actWeeding">—</div>
+              </div>
+              <div class="module-item" id="mod-packaging">
+                <div class="mod-icon">📦</div>
+                <div class="mod-label">Packaging</div>
+                <div class="mod-status" id="actPackaging">—</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3>Events & Alerts</h3><div class="hint">Live notifications</div></div>
+            <ul class="alerts-list" id="alertsList" aria-live="polite"></ul>
+          </div>
+        </div>
+
+        <!-- Telemetry table -->
+        <div class="card">
           <div class="card-head">
             <h3>Live Telemetry</h3>
-            <div class="hint">Latest readings</div>
+            <button class="btn-export" onclick="exportData()">⬇ Export CSV</button>
           </div>
-
           <div class="table-wrap">
             <table class="table">
-              <thead>
-                <tr>
-                  <th>Module</th>
-                  <th>Raw</th>
-                  <th>Percent</th>
-                  <th>Status</th>
-                  <th>Updated</th>
-                </tr>
-              </thead>
+              <thead><tr><th>Module</th><th>Raw</th><th>Percent</th><th>Status</th><th>Updated</th></tr></thead>
               <tbody id="telemetryTbody"></tbody>
             </table>
           </div>
-        </article>
-      </section>
-
-      <section class="card">
-        <div class="card-head">
-          <h3>Module States</h3>
-          <div class="hint">What the system is doing right now</div>
         </div>
 
-        <div class="overview">
-          <div class="overview-item">
-            <div class="label">Planting</div>
-            <div class="value" id="actPlanting">—</div>
-          </div>
-          <div class="overview-item">
-            <div class="label">Watering</div>
-            <div class="value" id="actWatering">—</div>
-          </div>
-          <div class="overview-item">
-            <div class="label">Weeding</div>
-            <div class="value" id="actWeeding">—</div>
-          </div>
-          <div class="overview-item">
-            <div class="label">Packaging</div>
-            <div class="value" id="actPackaging">—</div>
+      </div>
+    </div>
+
+    <!-- ── PAGE: MY FIELDS ── -->
+    <div class="page" id="page-fields">
+      <div class="page-inner">
+        <div class="page-header-row">
+          <h2>My Fields</h2>
+          <button class="btn-primary-sm" onclick="openAddField()">+ Add Field</button>
+        </div>
+        <div class="fields-grid" id="fieldsGrid"></div>
+
+        <!-- Add field modal -->
+        <div class="modal-overlay" id="fieldModal" style="display:none">
+          <div class="modal">
+            <div class="modal-head"><h3>Add New Field</h3><button onclick="closeFieldModal()">✕</button></div>
+            <div class="field-group"><label>Field Name</label><input class="field" id="fieldName" placeholder="e.g. North Plot"/></div>
+            <div class="field-group"><label>Crop Type</label>
+              <select class="field" id="fieldCrop">
+                <option>Maize</option><option>Beans</option><option>Tomatoes</option><option>Cassava</option>
+                <option>Sweet Potatoes</option><option>Sorghum</option><option>Groundnuts</option><option>Cabbage</option>
+              </select>
+            </div>
+            <div class="fields-row">
+              <div class="field-group"><label>Size (acres)</label><input class="field" id="fieldSize" type="number" placeholder="2.5"/></div>
+              <div class="field-group"><label>Planted Date</label><input class="field" id="fieldDate" type="date"/></div>
+            </div>
+            <div class="field-group"><label>Notes</label><textarea class="field" id="fieldNotes" rows="2" placeholder="Any notes about this field..."></textarea></div>
+            <button class="btn-primary" onclick="saveField()">Save Field</button>
           </div>
         </div>
-      </section>
-    </main>
+      </div>
+    </div>
 
-    <footer class="footer">
-      <span>FarmWatch • Tinkercad/Arduino Uno • Web Serial</span>
-      <span class="muted">Modes: Black+Green (Ops) / White+Green (Reports)</span>
-    </footer>
+    <!-- ── PAGE: HISTORY ── -->
+    <div class="page" id="page-history">
+      <div class="page-inner">
+        <div class="page-header-row">
+          <h2>Sensor History</h2>
+          <button class="btn-export" onclick="exportData()">⬇ Export CSV</button>
+        </div>
+        <div class="history-summary" id="historySummary"></div>
+        <div class="card">
+          <div class="card-head"><h3>All Readings</h3><div class="hint" id="historyCount">0 records</div></div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead><tr><th>Time</th><th>Soil %</th><th>Temp %</th><th>Harvest %</th><th>Sort %</th><th>Action</th></tr></thead>
+              <tbody id="historyTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <script src="app.js"></script>
-  </body>
+    <!-- ── PAGE: CROP CALENDAR ── -->
+    <div class="page" id="page-calendar">
+      <div class="page-inner">
+        <div class="page-header-row"><h2>Crop Calendar</h2><button class="btn-primary-sm" onclick="openAddTask()">+ Add Task</button></div>
+        <div class="calendar-grid" id="calendarGrid"></div>
+
+        <div class="modal-overlay" id="taskModal" style="display:none">
+          <div class="modal">
+            <div class="modal-head"><h3>Add Calendar Task</h3><button onclick="closeTaskModal()">✕</button></div>
+            <div class="field-group"><label>Task</label><input class="field" id="taskName" placeholder="e.g. Apply fertilizer"/></div>
+            <div class="fields-row">
+              <div class="field-group"><label>Date</label><input class="field" id="taskDate" type="date"/></div>
+              <div class="field-group"><label>Field</label>
+                <select class="field" id="taskField"><option>All Fields</option></select>
+              </div>
+            </div>
+            <div class="field-group"><label>Type</label>
+              <select class="field" id="taskType">
+                <option>🌱 Planting</option><option>💧 Watering</option><option>🌿 Weeding</option>
+                <option>🧪 Fertilizing</option><option>🔪 Harvesting</option><option>📦 Packaging</option><option>🔬 Inspection</option>
+              </select>
+            </div>
+            <button class="btn-primary" onclick="saveTask()">Save Task</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PAGE: FARM NOTES ── -->
+    <div class="page" id="page-notes">
+      <div class="page-inner">
+        <div class="page-header-row"><h2>Farm Notes</h2><button class="btn-primary-sm" onclick="openAddNote()">+ New Note</button></div>
+        <div class="notes-grid" id="notesGrid"></div>
+
+        <div class="modal-overlay" id="noteModal" style="display:none">
+          <div class="modal">
+            <div class="modal-head"><h3>New Note</h3><button onclick="closeNoteModal()">✕</button></div>
+            <div class="field-group"><label>Title</label><input class="field" id="noteTitle" placeholder="e.g. Pest spotted in north plot"/></div>
+            <div class="field-group"><label>Note</label><textarea class="field" id="noteBody" rows="4" placeholder="Write your observation..."></textarea></div>
+            <div class="field-group"><label>Tag</label>
+              <select class="field" id="noteTag">
+                <option>🐛 Pest/Disease</option><option>💧 Irrigation</option><option>🌱 Growth</option>
+                <option>🌤️ Weather</option><option>📦 Harvest</option><option>💰 Market</option><option>📌 General</option>
+              </select>
+            </div>
+            <button class="btn-primary" onclick="saveNote()">Save Note</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PAGE: ALERTS ── -->
+    <div class="page" id="page-alerts">
+      <div class="page-inner">
+        <div class="page-header-row"><h2>All Alerts</h2><button class="btn-export" onclick="clearAlerts()">Clear All</button></div>
+        <div class="alerts-full" id="alertsFull"></div>
+      </div>
+    </div>
+<!-- ── PAGE: PROFIT TRACKER ── -->
+<div class="page" id="page-profit">
+  <div class="page-inner">
+    <div class="page-header-row">
+      <h2>💰 Profit Tracker</h2>
+      <button class="btn-primary-sm" onclick="calculateProfit()">Calculate Profit</button>
+    </div>
+
+    <div class="profit-grid">
+      <div class="card">
+        <div class="card-head"><h3>🌱 Input Costs</h3></div>
+        <div class="field-group"><label>Seeds (UGX)</label><input class="field" id="costSeeds" type="number" placeholder="0"/></div>
+        <div class="field-group"><label>Fertilizer (UGX)</label><input class="field" id="costFertilizer" type="number" placeholder="0"/></div>
+        <div class="field-group"><label>Other Costs (UGX)</label><input class="field" id="costOther" type="number" placeholder="0"/></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>🌾 Harvest & Sales</h3></div>
+        <div class="field-group"><label>Crop Type</label>
+          <select class="field" id="profitCrop">
+            <option>Maize</option><option>Beans</option><option>Tomatoes</option>
+            <option>Cassava</option><option>Sweet Potatoes</option><option>Groundnuts</option><option>Cabbage</option>
+          </select>
+        </div>
+        <div class="field-group"><label>Harvest Yield (kg)</label><input class="field" id="harvestYield" type="number" placeholder="0"/></div>
+        <div class="field-group"><label>Raw Selling Price (UGX/kg)</label><input class="field" id="rawPrice" type="number" placeholder="0"/></div>
+        <div class="field-group"><label>Packaged Selling Price (UGX/kg)</label><input class="field" id="packagedPrice" type="number" placeholder="0"/></div>
+        <div class="field-group"><label>Season</label>
+          <select class="field" id="profitSeason">
+            <option>Season A 2025</option><option>Season B 2025</option>
+            <option>Season A 2026</option><option>Season B 2026</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="profit-result" id="profitResult" style="display:none">
+      <div class="profit-stat" id="profitRevRaw"></div>
+      <div class="profit-stat" id="profitRevPkg"></div>
+      <div class="profit-stat" id="profitCostTotal"></div>
+      <div class="profit-stat highlight" id="profitNet"></div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <div class="card-head"><h3>📊 Season History</h3><div class="hint" id="seasonCount">0 seasons</div></div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Season</th><th>Crop</th><th>Yield (kg)</th><th>Revenue</th><th>Costs</th><th>Profit</th></tr></thead>
+          <tbody id="profitHistoryTbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+    <!-- ── PAGE: AI ASSISTANT ── -->
+<div class="page" id="page-chat">
+  <div class="page-inner">
+    <div class="page-header-row">
+      <h2>🤖 AI Farm Assistant</h2>
+      <div class="hint">Ask anything about your farm</div>
+    </div>
+    <div class="chat-container">
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-bubble ai">
+          <div class="bubble-text">👋 Hello farmer! I am your FarmWatch AI assistant. I can see your live sensor data and help you make better farming decisions. What would you like to know?</div>
+        </div>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" class="field" id="chatInput" placeholder="Ask me anything about your farm..."/>
+        <button class="btn-primary-sm" id="chatSendBtn" onclick="sendChatMessage()">Send →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- ── PAGE: SETTINGS ── -->
+    <div class="page" id="page-settings">
+      <div class="page-inner">
+        <h2>Settings</h2>
+        <div class="settings-grid">
+
+          <div class="card">
+            <div class="card-head"><h3>🎨 Theme & Appearance</h3></div>
+            <div class="setting-row">
+              <span>Color Theme</span>
+              <div class="color-swatches">
+                <div class="swatch active" style="--c:#2eea7a" onclick="setAccent('#2eea7a','#19c866',this)" title="Green"></div>
+                <div class="swatch" style="--c:#00d2ff" onclick="setAccent('#00d2ff','#0099cc',this)" title="Cyan"></div>
+                <div class="swatch" style="--c:#ff9f43" onclick="setAccent('#ff9f43','#e07b20',this)" title="Orange"></div>
+                <div class="swatch" style="--c:#ff6b9d" onclick="setAccent('#ff6b9d','#e04477',this)" title="Pink"></div>
+                <div class="swatch" style="--c:#a29bfe" onclick="setAccent('#a29bfe','#7c6fd4',this)" title="Lavender"></div>
+                <div class="swatch" style="--c:#ffd32a" onclick="setAccent('#ffd32a','#c9a800',this)" title="Gold"></div>
+              </div>
+            </div>
+            <div class="setting-row">
+              <span>Dark / Light Mode</span>
+              <button class="btn-toggle" onclick="toggleTheme()" id="themeToggleBtn">Toggle</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3>🔔 Alert Thresholds</h3></div>
+            <div class="setting-row"><span>Soil Moisture min %</span><input class="field-sm" type="number" id="threshSoil" value="30"/></div>
+            <div class="setting-row"><span>Temperature max %</span><input class="field-sm" type="number" id="threshTemp" value="75"/></div>
+            <div class="setting-row"><span>Harvest readiness min %</span><input class="field-sm" type="number" id="threshHarvest" value="80"/></div>
+            <button class="btn-primary-sm" onclick="saveThresholds()" style="margin-top:12px">Save Thresholds</button>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3>👤 Farm Profile</h3></div>
+            <div class="field-group"><label>Farm Name</label><input class="field" id="settingFarmName" placeholder="Green Valley Farm"/></div>
+            <div class="field-group"><label>Location</label><input class="field" id="settingLocation" placeholder="Kampala, Uganda"/></div>
+            <div class="field-group"><label>Phone (for SMS alerts)</label><input class="field" id="settingPhone" placeholder="+256 700 000000"/></div>
+            <button class="btn-primary-sm" onclick="saveProfile()">Save Profile</button>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3>📊 Data Management</h3></div>
+            <div class="setting-row"><span>Saved readings</span><span id="dataCount" class="muted-val">0</span></div>
+            <div class="setting-row"><span>Export all data</span><button class="btn-export" onclick="exportData()">⬇ CSV</button></div>
+            <div class="setting-row"><span>Clear all history</span><button class="btn-danger" onclick="clearHistory()">🗑 Clear</button></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /app-body -->
+</div><!-- /appScreen -->
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+  }
+</script>
+</body>
 </html>
