@@ -52,8 +52,9 @@ FarmWatch aims to bridge this gap by providing a unified, intelligent system tha
 - Enables modern, technology-driven farming  
 
 ## Contributors  
-- Kirabo Faith Kiggundu  
-- Bridget Onyang  
+- Kirabo Faith Kiggundu - AI Engineer(Team Lead)
+- Bridget Onyang - Developer
+- Ringtho Marlyn Somers - Machine Learning Engineer 
 
 ## Future Work  
 - Backend system development  
