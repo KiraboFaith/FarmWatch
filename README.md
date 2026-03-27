@@ -8,6 +8,7 @@ The system combines a web-based interface with planned AI-powered hardware capab
 
 ## Concept  
 The system is designed to handle the full agricultural lifecycle, including:
+
 - Planting  
 - Crop monitoring and care  
 - Harvesting  
