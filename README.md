@@ -1,53 +1,62 @@
-# FarmWatch 🌱
+# FarmWatch 🌱  
+An AI-driven multipurpose farming system designed to automate and optimize the entire agricultural value chain.
 
-A web-based application that monitors a multipurpose farming system using AI-driven insights to support smarter agricultural decision-making.
+## Overview  
+FarmWatch is a proposed intelligent agricultural system that integrates multiple farming processes into a single platform. Unlike traditional machines that are limited to one task or crop, FarmWatch is designed to support a variety of crops such as wheat, millet, rice, fruits, and coffee.
 
-## Overview
+The system combines a web-based interface with planned AI-powered hardware capabilities to enable smarter, more efficient farming operations directly on-site.
 
-FarmWatch is designed to help farmers in Uganda monitor and manage their farming operations through a simple web interface. The system integrates AI to detect anomalies, track crop conditions, and provide actionable alerts before problems escalate.
+## Concept  
+The system is designed to handle the full agricultural lifecycle, including:
+- Planting  
+- Crop monitoring and care  
+- Harvesting  
+- Sorting and grading  
+- Processing  
+- Packaging  
 
-## Features
+By integrating these processes into one system, FarmWatch reduces the need for multiple machines and external processing facilities.
 
-- Real-time monitoring of farming conditions
-- AI-driven fault detection and early warning alerts
-- Web-based interface accessible without technical expertise
-- Support for multipurpose farming (crops and/or livestock)
-- Data logging for tracking farm performance over time
+## Key Features  
+- Multipurpose support for different crop types  
+- Conceptual web interface for monitoring and control  
+- Scalable design for full farm automation  
+- On-farm value addition (processing and packaging)  
+- AI-driven adaptability for improved performance over time  
 
-## Tech Stack
+## AI Approach (Planned)  
+FarmWatch is designed to incorporate:
+- **Computer Vision** for crop detection, health monitoring, and sorting  
+- **Reinforcement Learning** for adaptive decision-making and system optimization  
 
-- **Frontend:** HTML, CSS, JavaScript
-- **Backend:** Python
-- **AI/ML:** Machine learning models for pattern detection and monitoring
+## Current Status  
+This project is currently in the **prototype and design phase**, with a frontend interface developed to demonstrate system interaction and user experience. Backend systems and AI integration are planned for future development.
 
+## Technologies (Current)  
+- HTML  
+- CSS  
+- JavaScript  
 
-## Contributors
+## Planned Technologies  
+- Backend: Python  
+- AI/ML: Computer Vision & Reinforcement Learning  
+- Hardware Integration (IoT / Smart Farming Devices)
 
-- [Kirabo Faith Kiggundu](https://github.com/KiraboFaith)
-- [Bridget Onyang](https://github.com/Bridget-Onyang)
+## Motivation  
+Many farmers in Uganda and similar regions lack access to integrated agricultural technologies. Existing solutions are often expensive, fragmented, and limited to single functions.
 
-## Motivation
+FarmWatch aims to bridge this gap by providing a unified, intelligent system that:
+- Reduces operational costs  
+- Saves time  
+- Improves productivity  
+- Enables modern, technology-driven farming  
 
-Millions of Ugandan farmers operate without access to technical support or early warning systems. FarmWatch was built to close that gap — putting intelligent monitoring in the hands of people who need it most, through a platform simple enough for anyone to use.
+## Contributors  
+- Kirabo Faith Kiggundu  
+- Bridget Onyang  
 
-## Getting Started
-
-```bash
-# Clone the repository
-git clone https://github.com/Bridget-Onyang/Web-based-system.git
-
-# Navigate into the project directory
-cd Web-based-system
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run the application
-python manage.py runserver
-```
-
-> Update the setup instructions above to match your actual run commands if different.
-
-## Status
-
-Active development — built as part of BSc Computer Science coursework at Uganda Christian University.
+## Future Work  
+- Backend system development  
+- AI model implementation  
+- Real-time data integration  
+- Hardware prototyping and field testing  
