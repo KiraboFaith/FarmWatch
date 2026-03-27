@@ -4,7 +4,7 @@ A web-based application that monitors a multipurpose farming system using AI-dri
 
 ## Overview
 
-FarmWatch is designed to help farmers — particularly non-technical users in Uganda — monitor and manage their farming operations through a simple web interface. The system integrates AI to detect anomalies, track crop and livestock conditions, and provide actionable alerts before problems escalate.
+FarmWatch is designed to help farmers in Uganda monitor and manage their farming operations through a simple web interface. The system integrates AI to detect anomalies, track crop conditions, and provide actionable alerts before problems escalate.
 
 ## Features
 
@@ -19,7 +19,7 @@ FarmWatch is designed to help farmers — particularly non-technical users in Ug
 - **Frontend:** HTML, CSS, JavaScript
 - **Backend:** Python
 - **AI/ML:** Machine learning models for pattern detection and monitoring
-- **Database:** (update with actual DB used)
+
 
 ## Contributors
 
